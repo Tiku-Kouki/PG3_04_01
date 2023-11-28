@@ -1,6 +1,8 @@
 #include <Novice.h>
+#include "InputHandler.h"
+#include "Player.h"
 
-const char kWindowTitle[] = "学籍番号";
+const char kWindowTitle[] = "LE2C_17_チク_コウキ";
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -11,6 +13,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// キー入力結果を受け取る箱
 	char keys[256] = {0};
 	char preKeys[256] = {0};
+
+	InputHandler* inputHandler = new InputHandler();
+	inputHandler->AssignMoveLeftCommand2PressKeyA();
+	inputHandler->AssignMoveRightCommand2PressKeyD();
+	inputHandler->AssignMoveUpCommand2PressKeyW();
+	inputHandler->AssignMoveDownCommand2PressKeyS();
+
+	ICommand* command_ = nullptr;
+	Player* player = new Player();
+
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -24,7 +36,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		/// ↓更新処理ここから
 		///
+		command_ = inputHandler->HandleInput();
 
+		if (command_) {
+			command_->Exec(*player);
+		}
+
+		player->Update();
 		///
 		/// ↑更新処理ここまで
 		///
@@ -32,7 +50,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		/// ↓描画処理ここから
 		///
-
+		player->Draw();
 		///
 		/// ↑描画処理ここまで
 		///
